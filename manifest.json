@@ -1,28 +1,43 @@
 {
-	"name": "Query stripper",
-	"version": "1.8",
+	"name": "Facebook URL fix",
+	"version": "1.0",
 	"manifest_version": 2,
 
-	"description": "Strips annoying query parameters from URLs. It does utm_* (google), atl_* (atlassian) and ref_ (imdb). More tokens are customizable.",
+	"description": "Shorten Facebook URLs to reduce tracking and unresponsive situations.",
 	"icons": {
-		"128": "images/logo_128.png",
-		"48": "images/logo_48.png"
+		"16": "images/logo_16.png",
+		"32": "images/logo_32.png",
+		"48": "images/logo_48.png",
+		"128": "images/logo_128.png"
 	},
 
+	"browser_action": {
+		"default_icon": {
+			"19": "images/logo_19.png",
+			"38": "images/logo_38.png"
+		}
+	},
+
+	"author": "LQ2'",
+
 	"permissions": [
-		"storage",
 		"webRequest",
 		"webRequestBlocking",
-		"*://*/*"
+		"*://*.facebook.com/*"
 	],
+
 	"background": {
-		"scripts": [ "querystripper.logic.js", "querystripper.background.js" ]
+		"scripts": [ "fburlfix.logic.js", "fburlfix.background.js" ]
 	},
+
 	"content_scripts": [{
 		"all_frames": true,
 		"run_at": "document_start",
-		"js": [ "querystripper.logic.js", "querystripper.content.js" ],
-		"matches": [ "http://*/*", "https://*/*" ]
+		"js": [ "fburlfix.logic.js", "fburlfix.content.js" ],
+		"matches": [ "http://*.facebook.com/*", "https://*.facebook.com/*" ]
 	}],
-	"options_page": "options/options.html"
+
+	"homepage_url": "https://github.com/LQ2-apostrophe",
+
+	"incognito": "spanning"
 }
