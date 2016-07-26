@@ -1,5 +1,5 @@
 # Facebook URL fix
-This is a Google Chrome extension which shortens Facebook URLs to reduce tracking and 'unresponsive' situations.
+This is a Google Chrome extension which shortens Facebook URLs to reduce tracking and unresponsive situations.
 
 Author: **LQ2'** ([Website](http://www.LQ2music.com/) | [GitHub](https://github.com/LQ2-apostrophe))
 
@@ -12,8 +12,9 @@ Thanks [Custom Icon Design](http://www.customicondesign.com/) for the wrench ico
 - Changes modern photo links into legacy links
 - Shortens album ID containing `a.<something>` in query parameter `set` in legacy album links
 
-## Upcoming feature(s)
-**[Major]** Actively shorten and remove unnecessary things in `<a>` tags in the page
+## To do
+- **[Major feature]** Actively shorten and remove unnecessary things in `<a>` tags in the page
+- *[Bugfix]* Buttons Previous and Next in photo viewer are unresponsive in some special albums / posts
 
 ## Installation
 1. Download the ZIP file of [the latest release of this extension](https://github.com/LQ2-apostrophe/Facebook-URL-fix/releases/latest).
