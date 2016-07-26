@@ -1,4 +1,3 @@
-
 (function() {
 
 	// Only for top frame
@@ -11,42 +10,14 @@
 		return;
 	}
 
-
-
 	// Local logic
 	function replaceQuery(url) {
-		var nUrl = url;
-		var nUrltmp = fuf.stripQueries(url);
-		if ( nUrltmp ) {
-			console.log('Facebook URL fix did strip most query parameters on "' + url + '".');
-			nUrl = nUrltmp;
-		}
-		nUrltmp = fuf.stripQuerySet(nUrl);
-		if ( nUrltmp ) {
-			console.log('Facebook URL fix did strip query parameter SET on "' + url + '".');
-			nUrl = nUrltmp;
-		}
-		nUrltmp = fuf.stripQueryId(nUrl);
-		if ( nUrltmp ) {
-			console.log('Facebook URL fix did strip query parameter ID on "' + url + '".');
-			nUrl = nUrltmp;
-		}
-		nUrltmp = fuf.stripQueryPrivacySource(nUrl);
-		if ( nUrltmp ) {
-			console.log('Facebook URL fix did strip query parameter PRIVACY_SOURCE on "' + url + '".');
-			nUrl = nUrltmp;
-		}
-		nUrltmp = fuf.forceLegacyPhotoUrl(nUrl);
-		if ( nUrltmp ) {
-			console.log('Facebook URL fix did change the following URL to legacy style: ' + url);
-			nUrl = nUrltmp;
-		}
-		if ( nUrl != url ) {
+		var nUrl = fuf.fixUrl(url);
+		if ( nUrl ) {
+			console.log('Facebook URL fix did its thing on "' + url + '".');
 			history.replaceState({}, '', nUrl);
 		}
 	}
-
-
 
 	// 'Listen' for URL changes (pushState, replaceState, hash)
 	var href = location.href;

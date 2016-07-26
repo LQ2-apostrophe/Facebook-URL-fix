@@ -1,111 +1,104 @@
 fuf = {
-	tokens: [
-		// Facebook tracking query parameters (can be safely stripped)
-		'fref',
-		'cref',
-		'ref',
-		'fb_ref',
-		'refid',
-		'pnref',
-		'fb_source',
-		'refsource',
-		'ref_type',
-		'source_ref',
-		'notif_t',
-		'notif_id',
-		'tsid',
-		'source',
-		'type',
-		'hsi',
-		'rid',
-		'qid',
-		'rt',
-		'rf',
-		'from_bookmark',
-		'__tn__',
-		'__xt__',
-		'mf_story_key',
-		'mt_nav',
-		'count',
-		'fb_bmpos',
-		'app_id',
-		'entry_point',
-		'video_source',
-		'returnto'
-	],
+	fixUrl: function(url) {
+		tokens = [
+			// Include completely useless query parameters
+			'fref',
+			'cref',
+			'ref',
+			'fb_ref',
+			'refid',
+			'pnref',
+			'fb_source',
+			'refsource',
+			'ref_type',
+			'source_ref',
+			'notif_t',
+			'notif_id',
+			'tsid',
+			'source',
+			'type',
+			'hsi',
+			'rid',
+			'qid',
+			'rt',
+			'rf',
+			'from_bookmark',
+			'__tn__',
+			'__xt__',
+			'mf_story_key',
+			'mt_nav',
+			'count',
+			'fb_bmpos',
+			'app_id',
+			'story_id',
+			'entry_point',
+			'video_source',
+			'returnto'
+		];
 
-	stripQueries: function(url) {
-		if (url.indexOf('?') > 0 || url.indexOf('#') > 0) {
-			var regex = new RegExp('([?&#])(?:' + fuf.tokens.join('|') + ')=[^&#]*', 'ig');
-			var filtered = url;
-			filtered = filtered.replace(regex, '$1'); // Remove `name=value`
-			if ( filtered != url ) {
-				filtered = filtered.replace(/([?&#])[?&#]+/g, '$1'); // Replace double ?&# by first occurring
-				filtered = filtered.replace(/[?&#]+$/, ''); // Remove trailing ?&#
-				return filtered;
+		darkTokens = [
+			// Query parameters that are only used on some links
+			'id',
+			'fbid',
+			'set',
+			'privacy_source',
+			'l'
+		];
+
+		darkTokensUrlRegex = [
+			// Regexs matching URLs where darkTokens are used. darkTokens[a] matches darkTokensUrlRegex[a].
+			/^https:\/\/(?:www|web|m|mobile)\.facebook\.com\/(?:profile\.php|permalink\.php)\?/ig,
+			/^https:\/\/(?:www|web|m|mobile)\.facebook\.com\/photo\.php\?/ig,
+			/^https:\/\/(?:www|web|m|mobile)\.facebook\.com\/(?:media\/set\/|[a-z0-9\.]*\/media_set)\?/ig,
+			/^https:\/\/(?:www|web)\.facebook\.com\/[a-z0-9.]*\/allactivity/ig,
+			/^https:\/\/(?:m|mobile)\.facebook\.com/ig
+		];
+
+		var oldLink = url;
+		var newLink = oldLink;
+
+		// Rule 1: Remove useless query parameters
+		if (oldLink.indexOf('?') > 0 || oldLink.indexOf('#') > 0) {
+			// Add more useless query parameters from darkTokens to tokens array
+			var i;
+			for (i = 0; i < darkTokens.length; i++) {
+				if (!oldLink.match(darkTokensUrlRegex[i])) {
+					tokens.push(darkTokens[i]);
+				}
+			}
+			// Remove query parameters now
+			var regex = new RegExp('([?&#])(?:' + tokens.join('|') + ')=[^&#]*', 'ig');
+			newLink = newLink.replace(regex, '$1'); // Remove `name=value`
+			if ( newLink != oldLink ) {
+				newLink = newLink.replace(/([?&#])[?&#]+/g, '$1'); // Replace double ?&# by first occurring
+				newLink = newLink.replace(/[?&#]+$/, ''); // Remove trailing ?&#
+				oldLink = newLink;
 			}
 		}
-	},
 
-	forceLegacyPhotoUrl: function(url) {
-		if (url.match(/^(?:http|https):\/\/(?:www|web|m|mobile)\.facebook\.com\/[a-z0-9.]*\/photos\/[^#\?\/]*\/[0-9]*/ig)) {
-			var newUrl = url;
-			// Strip FBID parameter (not needed)
-			newUrl = newUrl.replace(/([?&#])fbid=[^&#]*/ig, '$1') // Remove `FBID=value`
-			if ( newUrl != url ) {
-				newUrl = newUrl.replace(/([?&#])[?&#]+/g, '$1'); // Replace double ?&# by first occurring
-				newUrl = newUrl.replace(/[?&#]+$/, ''); // Remove trailing ?&#
-			}
-			// Rewrite legacy photo URL
-			if (url.indexOf('?') > 0) {
-				newUrl = newUrl.replace(/[^\/]*\/photos\/[^\/]*\/([^\/]*)\/\?/ig, 'photo.php?fbid=$1&'); // Preserve existing queries
+		// Rule 2: Force legacy link for photos
+		if (oldLink.match(/^https:\/\/(?:www|web|m|mobile)\.facebook\.com\/[a-z0-9\.]*\/photos\/[^\/]*\/[0-9]*/ig)) {
+			if (oldLink.indexOf('?') > 0) { // Preserve existing queries
+				newLink = newLink.replace(/[a-z0-9\.]*\/photos\/[^\/]*\/([0-9]*)\/\?/ig, 'photo.php?fbid=$1&');
 			} else {
-				newUrl = newUrl.replace(/[^\/]*\/photos\/[^\/]*\/([^\/]*)\//ig, 'photo.php?fbid=$1'); // Knockout trailing slash
-				newUrl = newUrl.replace(/[^\/]*\/photos\/[^\/]*\/([^\/]*)/ig, 'photo.php?fbid=$1'); // Ideal situation (no queries)
+				newLink = newLink.replace(/[a-z0-9\.]*\/photos\/[^\/]*\/([0-9]*)\//ig, 'photo.php?fbid=$1');
+				newLink = newLink.replace(/[a-z0-9\.]*\/photos\/[^\/]*\/([0-9]*)/ig, 'photo.php?fbid=$1');
 			}
-			return newUrl;
+			oldLink = newLink;
 		}
-	},
 
-	stripQuerySet: function(url) {
-		// Strip SET parameter from legacy photo.php links
-		if (url.match(/^(?:http|https):\/\/(?:www|web|m|mobile)\.facebook\.com\/photo\.php\?/ig)) {
-			var newUrl = url;
-			// Strip SET parameter (not needed)
-			newUrl = newUrl.replace(/([?&#])set=[^&#]*/ig, '$1') // Remove `SET=value`
-			if ( newUrl != url ) {
-				newUrl = newUrl.replace(/([?&#])[?&#]+/g, '$1'); // Replace double ?&# by first occurring
-				newUrl = newUrl.replace(/[?&#]+$/, ''); // Remove trailing ?&#
-				return newUrl;
+		// Rule 3: Shorten parameter SET on legacy a-type (SET has a value containing 'a.[something]') link for albums
+		if (oldLink.match(/^https:\/\/(?:www|web|m|mobile)\.facebook\.com\/(?:media\/set\/|[a-z0-9\.]*\/media_set)\?/ig)) {
+			// Parameter SET must be there
+			if (oldLink.match(/[?&#]set=[^&#]*/ig)) {
+				newLink = newLink.replace(/([?&#])set=[^&#]*a\.([0-9]*)[^&#]*/ig, '$1set=a.$2');
+				oldLink = newLink;
 			}
 		}
-	},
 
-	stripQueryId: function(url) {
-		// Strip query parameter ID on all links except profile.php
-		if (!url.match(/^(?:http|https):\/\/(?:www|web|m|mobile)\.facebook\.com\/profile\.php\?/ig)) {
-			var newUrl = url;
-			// Strip SET parameter (not needed)
-			newUrl = newUrl.replace(/([?&#])id=[^&#]*/ig, '$1') // Remove `SET=value`
-			if ( newUrl != url ) {
-				newUrl = newUrl.replace(/([?&#])[?&#]+/g, '$1'); // Replace double ?&# by first occurring
-				newUrl = newUrl.replace(/[?&#]+$/, ''); // Remove trailing ?&#
-				return newUrl;
-			}
-		}
-	},
-
-	stripQueryPrivacySource: function(url) {
-		// Strip query parameter PRIVACY_SOURCE on all places except at Home of desktop site
-		if (!url.match(/^(?:http|https):\/\/(?:www|web)\.facebook\.com\/[a-z0-9.]*\/allactivity/ig)) {
-			var newUrl = url;
-			// Strip SET parameter (not needed)
-			newUrl = newUrl.replace(/([?&#])privacy_source=[^&#]*/ig, '$1') // Remove `SET=value`
-			if ( newUrl != url ) {
-				newUrl = newUrl.replace(/([?&#])[?&#]+/g, '$1'); // Replace double ?&# by first occurring
-				newUrl = newUrl.replace(/[?&#]+$/, ''); // Remove trailing ?&#
-				return newUrl;
-			}
+		// Only return shortened link
+		if ( newLink != url ) {
+			return newLink;
 		}
 	}
 };
