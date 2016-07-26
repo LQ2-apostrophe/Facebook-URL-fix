@@ -5,7 +5,7 @@ Author: **LQ2'** ([Website](http://www.LQ2music.com/) | [GitHub](https://github.
 
 Based on [Query stripper](https://github.com/rudiedirkx/Query-stripper) by Rudie Dirkx.
 
-Credits to [Custom Icon Design](http://www.customicondesign.com/) for the wrench icon used in the icon of this extension.
+Thanks [Custom Icon Design](http://www.customicondesign.com/) for the wrench icon used in the icon of this extension.
 
 ## Features
 - Removes unnecessary query parameters from Facebook URLs
