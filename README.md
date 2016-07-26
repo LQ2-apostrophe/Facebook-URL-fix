@@ -63,6 +63,7 @@ https://www.facebook.com/media/set/?set=a.<minimal_numeric_part>
 ## Version history
 ### 1.1
 - Less code for existing features
+- More unneeded query parameters are added. Some of them are still necessary in some links; when these links are entered, they are properly excluded by this extension.
 - New feature: Shortening album ID containing `a.<something>` in query parameter `set` in legacy album links
 
 ### 1.0
