@@ -9,6 +9,7 @@ fuf = {
 			'refid',
 			'pnref',
 			'fb_source',
+			'hc_location',
 			'refsource',
 			'ref_type',
 			'source_ref',
@@ -16,12 +17,12 @@ fuf = {
 			'notif_id',
 			'tsid',
 			'source',
-			'type',
 			'hsi',
 			'rid',
 			'qid',
 			'rt',
 			'rf',
+			'rc',
 			'from_bookmark',
 			'__tn__',
 			'__xt__',
@@ -31,6 +32,7 @@ fuf = {
 			'fb_bmpos',
 			'app_id',
 			'story_id',
+			'content_id',
 			'entry_point',
 			'video_source',
 			'returnto'
@@ -42,16 +44,18 @@ fuf = {
 			'fbid',
 			'set',
 			'privacy_source',
-			'l'
+			'l',
+			'type'
 		];
 
 		darkTokensUrlRegex = [
 			// Regexs matching URLs where darkTokens are used. darkTokens[a] matches darkTokensUrlRegex[a].
-			/^https:\/\/(?:www|web|m|mobile)\.facebook\.com\/(?:profile\.php|permalink\.php)\?/ig,
-			/^https:\/\/(?:www|web|m|mobile)\.facebook\.com\/photo\.php\?/ig,
+			/^https:\/\/(?:www|web|m|mobile)\.facebook\.com\/(?:profile\.php|permalink\.php|(?:business\/)?help\/community\/question\/)\?/ig,
+			/^https:\/\/(?:www|web|m|mobile)\.facebook\.com\/(?:photo\.php\?|login_alerts)/ig,
 			/^https:\/\/(?:www|web|m|mobile)\.facebook\.com\/(?:media\/set\/|[a-z0-9\.]*\/media_set)\?/ig,
 			/^https:\/\/(?:www|web)\.facebook\.com\/[a-z0-9.]*\/allactivity/ig,
-			/^https:\/\/(?:m|mobile)\.facebook\.com/ig
+			/^https:\/\/(?:m|mobile)\.facebook\.com/ig,
+			/^https:\/\/(?:www|web|m|mobile)\.facebook\.com\/[a-z0-9.]*\/activity_feed\//ig
 		];
 
 		var oldLink = url;
