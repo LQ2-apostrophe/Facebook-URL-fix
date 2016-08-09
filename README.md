@@ -61,8 +61,13 @@ https://www.facebook.com/media/set/?set=a.<minimal_numeric_part>
 ```
 
 ## Version history
+### 1.1.1
+- Updated more unneeded query parameters.
+- Query parameter `type` is now excluded at Page's Notifications tab for access to Mentions and Shares. (Only people working on Pages can see.)
+- Query parameter `id` is now excluded at Help Community for access to questions.
+
 ### 1.1
-- Less code for existing features
+- Less code for existing features.
 - More unneeded query parameters are added. Some of them are still necessary in some links; when these links are entered, they are properly excluded by this extension.
 - New feature: Shortening album ID containing `a.<something>` in query parameter `set` in legacy album links
 
