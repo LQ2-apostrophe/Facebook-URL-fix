@@ -11,10 +11,12 @@ Thanks [Custom Icon Design](http://www.customicondesign.com/) for the wrench ico
 - Removes unnecessary query parameters from Facebook URLs
 - Changes modern photo links into legacy links
 - Shortens album ID containing `a.<something>` in query parameter `set` in legacy album links
+- Enters external links directly. (Facebook's reference tracking is skipped.)
 
 ## To do
 - **[Major feature]** Actively shorten and remove unnecessary things in `<a>` tags in the page
-- *[Bugfix]* Buttons Previous and Next in photo viewer are unresponsive in some special albums / posts
+- *[Bugfix]* Buttons Previous and Next in photo viewer are broken in some albums / posts
+- *[Bugfix]* Tab content is not updated when external links are in fact inside Facebook network (e.g. `*.facebook.com`).
 
 ## Installation
 1. Download the ZIP file of [the latest release of this extension](https://github.com/LQ2-apostrophe/Facebook-URL-fix/releases/latest).
@@ -60,7 +62,25 @@ This will be changed into:
 https://www.facebook.com/media/set/?set=a.<minimal_numeric_part>
 ```
 
+### 4. Entering external links directly
+
+(This feature is available since version 1.2.)
+
+Here is a redirection link to an external site:
+```
+http://l.facebook.com/l.php?u=http%3A%2F%2Fexample.com%2F&h=<some code>
+```
+The external link is extracted and entered.
+```
+http://example.com/
+```
+
 ## Version history
+### 1.2
+- New feature: Entering external links directly (skipping Facebook's warning and reference tracking).
+- Updated more unneeded query parameters.
+- Query parameter `app_id` is now excluded at Facebook Live dialogs.
+
 ### 1.1.1
 - Updated more unneeded query parameters.
 - Query parameter `type` is now excluded at Page's Notifications tab for access to Mentions and Shares. (Only people working on Pages can see.)
