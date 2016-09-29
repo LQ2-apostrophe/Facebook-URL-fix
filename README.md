@@ -7,15 +7,19 @@ Based on [Query stripper](https://github.com/rudiedirkx/Query-stripper) by Rudie
 
 Thanks [Custom Icon Design](http://www.customicondesign.com/) for the wrench icon used in the icon of this extension.
 
+## News!
+A new extension focusing on fixing Facebook URLs (like this) is being written, with a completely different mechanism. It is **Blue Neutralization**.
+
+New updates to *Facebook URL fix* will not change the main mechanism derived from *Query stripper*.
+
 ## Features
 - Removes unnecessary query parameters from Facebook URLs
-- Changes modern photo links into legacy links
+- *[Removed]* Changes modern photo links into legacy links
 - Shortens album ID containing `a.<something>` in query parameter `set` in legacy album links
 - Enters external links directly. (Facebook's reference tracking is skipped.)
 
 ## To do
-- **[Major feature]** Actively shorten and remove unnecessary things in `<a>` tags in the page
-- *[Bugfix]* Buttons Previous and Next in photo viewer are broken in some albums / posts
+- **[Major feature]** Actively shorten and remove unnecessary things in `<a>` tags in the page. *This feature will be implemented in the new extension!*
 - *[Bugfix]* Tab content is not updated when external links are in fact inside Facebook network (e.g. `*.facebook.com`).
 
 ## Installation
@@ -38,7 +42,7 @@ New URL:
 https://www.facebook.com/<somebody>/posts/<post_id>?comment_id=<comment_id>&reply_comment_id=<reply_comment_id>
 ```
 
-### 2. Changing modern photo links into legacy links
+### 2. *[Removed]* Changing modern photo links into legacy links
 
 This is one modern photo link used in Facebook pages:
 ```
@@ -76,6 +80,12 @@ http://example.com/
 ```
 
 ## Version history
+### 1.3
+- Feature removed because of various bugs: Changing modern photo links to legacy ones.
+- Updated more unneeded query parameters.
+- Now some parameters are only removed at some links in order to prevent some unresponsive situations.
+- Update to feature of entering external links directly: Redirection subdomains has been extended.
+
 ### 1.2
 - New feature: Entering external links directly (skipping Facebook's warning and reference tracking).
 - Updated more unneeded query parameters.
