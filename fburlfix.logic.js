@@ -7,6 +7,7 @@ fuf = {
 			'ref',
 			'fb_ref',
 			'hc_ref',
+			'__mref',
 			'refid',
 			'pnref',
 			'fb_source',
@@ -59,7 +60,7 @@ fuf = {
 			/^https?:\/\/(?:www|web|m|mobile|mbasic)\.facebook\.com\/(?:media\/set\/|[a-z0-9.]+\/media_set)\?/ig,
 			/^https?:\/\/(?:www|web)\.facebook\.com\/[a-z0-9.]+\/allactivity/ig,
 			/^https?:\/\/(?:m|mobile|mbasic)\.facebook\.com/ig,
-			/^https?:\/\/(?:www|web|m|mobile|mbasic)\.facebook\.com\/[a-z0-9.]+\/activity_feed\//ig
+			/^https?:\/\/(?:www|web|m|mobile|mbasic)\.facebook\.com\/(?:[a-z0-9.]+\/activity_feed\/|media\/set\/\?set=vb\.|[a-z0-9.]+\/media_set\?set=vb\.)/ig
 		];
 
 		lightTokens = [
