@@ -14,9 +14,11 @@ New updates to *Facebook URL fix* will not change the main mechanism derived fro
 
 ## Features
 - Removes unnecessary query parameters from Facebook URLs
-- *[Removed]* Changes modern photo links into legacy links
 - Shortens album ID containing `a.<something>` in query parameter `set` in legacy album links
 - Enters external links directly. (Facebook's reference tracking is skipped.)
+
+### Removed feature
+- Changes modern photo links into legacy links
 
 ## To do
 - **[Major feature]** Actively shorten and remove unnecessary things in `<a>` tags in the page. *This feature will be implemented in the new extension!*
@@ -42,18 +44,7 @@ New URL:
 https://www.facebook.com/<somebody>/posts/<post_id>?comment_id=<comment_id>&reply_comment_id=<reply_comment_id>
 ```
 
-### 2. *[Removed]* Changing modern photo links into legacy links
-
-This is one modern photo link used in Facebook pages:
-```
-https://www.facebook.com/<onepage>/photos/<album_id>/<photo_id>
-```
-It will be changed into this legacy shorter link:
-```
-https://www.facebook.com/photo.php?fbid=<photo_id>
-```
-
-### 3. Shortening album ID containing `a.<something>` in query parameter `set` in legacy album links
+### 2. Shortening album ID containing `a.<something>` in query parameter `set` in legacy album links
 
 (This feature is available since version 1.1.)
 
@@ -66,7 +57,7 @@ This will be changed into:
 https://www.facebook.com/media/set/?set=a.<minimal_numeric_part>
 ```
 
-### 4. Entering external links directly
+### 3. Entering external links directly
 
 (This feature is available since version 1.2.)
 
@@ -80,6 +71,10 @@ http://example.com/
 ```
 
 ## Version history
+### 1.3.1
+- Added `__mref` to the list of completely useless query parameters.
+- Query parameter `type` is now excluded in default album for videos in profiles. (`set=vb.<numeric_part>`)
+
 ### 1.3
 - Feature removed because of various bugs: Changing modern photo links to legacy ones.
 - Updated more unneeded query parameters.
