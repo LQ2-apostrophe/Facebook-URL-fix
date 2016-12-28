@@ -73,7 +73,7 @@ http://example.com/
 ## Version history
 ### 1.4
 - Added support for all possible protocols that Facebook works on.
-- Added support for `http://facebook.com` links.
+- Added support for `http(s)://facebook.com` links.
 
 ### 1.3.1
 - Added `__mref` to the list of completely useless query parameters.
