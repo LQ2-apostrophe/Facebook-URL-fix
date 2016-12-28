@@ -55,12 +55,12 @@ fuf = {
 
 		darkTokensUrlRegex = [
 			// Regexes matching URLs where darkTokens are used. darkTokens[a] matches darkTokensUrlRegex[a].
-			/^https?:\/\/(?:www|web)\.facebook\.com\/[^\/]+\/dialog\/live_broadcast\?/ig,
-			/^https?:\/\/(?:www|web|m|mobile|mbasic)\.facebook\.com\/(?:photo\.php\?|album\.php\?|login_alerts|photo\/download\/\?)/ig,
-			/^https?:\/\/(?:www|web|m|mobile|mbasic)\.facebook\.com\/(?:media\/set\/|[a-z0-9.]+\/media_set)\?/ig,
-			/^https?:\/\/(?:www|web)\.facebook\.com\/[a-z0-9.]+\/allactivity/ig,
-			/^https?:\/\/(?:m|mobile|mbasic)\.facebook\.com/ig,
-			/^https?:\/\/(?:www|web|m|mobile|mbasic)\.facebook\.com\/(?:[a-z0-9.]+\/activity_feed\/|media\/set\/\?set=vb\.|[a-z0-9.]+\/media_set\?set=vb\.)/ig
+			/^https?:\/\/(?:(?:www|web)\.)?facebook\.com\/[^\/]+\/dialog\/live_broadcast\?/ig,
+			/^https?:\/\/(?:(?:www|web|m|mobile|mbasic)\.)?facebook\.com\/(?:photo\.php\?|album\.php\?|login_alerts|photo\/download\/\?)/ig,
+			/^https?:\/\/(?:(?:www|web|m|mobile|mbasic)\.)?facebook\.com\/(?:(?:media\/set\/|[a-z0-9.]+\/media_set)\?|profile\.php\?id=[0-9]+&sk=photos)/ig,
+			/^https?:\/\/(?:(?:www|web)\.)?facebook\.com\/[a-z0-9.]+\/allactivity/ig,
+			/^https?:\/\/(?:(?:m|mobile|mbasic)\.)?facebook\.com/ig,
+			/^https?:\/\/(?:(?:www|web|m|mobile|mbasic)\.)?facebook\.com\/(?:[a-z0-9.]+\/activity_feed\/|media\/set\/\?set=vb\.|[a-z0-9.]+\/media_set\?set=vb\.)/ig
 		];
 
 		lightTokens = [
@@ -76,23 +76,23 @@ fuf = {
 
 		lightTokensUrlRegex = [
 			// Regexes matching URLs where lightTokens are not used. darkTokens[a] matches lightTokensUrlRegex[a].
-			/^https?:\/\/(?:www|web|m|mobile|mbasic)\.facebook\.com\/ajax\/sharer\/\?/ig,
-			/^https?:\/\/(?:www|web|m|mobile|mbasic)\.facebook\.com\/photo\.php\?/ig,
-			/^https?:\/\/(?:www|web|m|mobile|mbasic)\.facebook\.com\/ajax\/nfx\/start_dialog\?/ig,
-			/^https?:\/\/(?:www|web|m|mobile|mbasic)\.facebook\.com\/[a-z0-9.]+\/photos\/[^\/]*\/[0-9]*\/\?/ig
+			/^https?:\/\/(?:(?:www|web|m|mobile|mbasic)\.)?facebook\.com\/ajax\/sharer\/\?/ig,
+			/^https?:\/\/(?:(?:www|web|m|mobile|mbasic)\.)?facebook\.com\/photo\.php\?/ig,
+			/^https?:\/\/(?:(?:www|web|m|mobile|mbasic)\.)?facebook\.com\/ajax\/nfx\/start_dialog\?/ig,
+			/^https?:\/\/(?:(?:www|web|m|mobile|mbasic)\.)?facebook\.com\/[a-z0-9.]+\/photos\/[^\/]*\/[0-9]*\/\?/ig
 		];
 
 		var oldLink = url;
 		var newLink = oldLink;
 
 		// Rule 1: Skip Facebook outbound redirection (and warning)
-		if (oldLink.match(/^https?:\/\/[a-z0-9]*\.facebook\.com\/l\.php\?/ig)) {
+		if (oldLink.match(/^https?:\/\/(?:[a-z0-9]*\.)?facebook\.com\/l\.php\?/ig)) {
 			// Query parameter U contains the original outbound link
 			if (oldLink.match(/[?&#]u=[^&#]*/ig)) {
 				newLink = decodeURIComponent(/[?&#]u=([^&#]*)/ig.exec(oldLink)[1]);
 				oldLink = newLink;
 				// Skip other rules if outbound link is truly outside Facebook
-				if (!newLink.match(/^https?:\/\/.*\.facebook\.com/ig)) {
+				if (!newLink.match(/^https?:\/\/(?:.*\.)?facebook\.com/ig)) {
 					return newLink;
 				}
 			}
@@ -124,13 +124,19 @@ fuf = {
 		}
 
 		// Rule 3: Shorten parameter SET on legacy a-type (SET has a value containing 'a.[something]') link for albums
-		if (oldLink.match(/^https?:\/\/(?:www|web|m|mobile)\.facebook\.com\/(?:media\/set\/|[a-z0-9.]+\/media_set)\?/ig)) {
+		if (oldLink.match(/^https?:\/\/(?:(?:www|web|m|mobile)\.)?facebook\.com\/(?:media\/set\/|[a-z0-9.]+\/media_set)\?/ig)) {
 			// Parameter SET must be there
 			if (oldLink.match(/[?&#]set=[^&#]*/ig)) {
-				newLink = newLink.replace(/([?&#])set=[^&#]*a\.([0-9]+)[^&#]*/ig, '$1set=a.$2');
+				var minimalAlbumID = /[?&#]set=[^&#]*a\.([0-9]+)[^&#]*/ig.exec(oldLink)[1];
+				if ((minimalAlbumID.length > 15) || (parseInt(minimalAlbumID.charAt[0]) < 4)) {
+					newLink = newLink.replace(/([?&#])set=[^&#]*a\.([0-9]+)\.([0-9]+)[^&#]*/ig, '$1set=a.$2.$3');
+				} else {
+					newLink = newLink.replace(/([?&#])set=[^&#]*a\.([0-9]+)[^&#]*/ig, '$1set=a.$2');
+				}
 				oldLink = newLink;
 			}
 		}
+		
 
 		// Only return shortened link
 		if ( newLink != url ) {

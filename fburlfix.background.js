@@ -1,6 +1,6 @@
 // Attach URL filter
 var filter = {
-	urls: ["http://*.facebook.com/*", "https://*.facebook.com/*"],
+	urls: ["*://*.facebook.com/*"],
 	types: ["main_frame", "sub_frame"],
 };
 var extraInfoSpec = ['blocking'];
