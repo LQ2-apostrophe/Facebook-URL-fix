@@ -19,7 +19,6 @@ fuf = {
 			'ref_page',
 			'source_ref',
 			'notif_t',
-			'notif_id',
 			'tsid',
 			'source',
 			'hsi',
@@ -40,7 +39,9 @@ fuf = {
 			'content_id',
 			'entry_point',
 			'video_source',
-			'returnto'
+			'returnto',
+			'qsefr',
+			'lst'
 		];
 
 		darkTokens = [
@@ -50,7 +51,8 @@ fuf = {
 			'set',
 			'privacy_source',
 			'l',
-			'type'
+			'type',
+			'notif_id'
 		];
 
 		darkTokensUrlRegex = [
@@ -60,7 +62,8 @@ fuf = {
 			/^https?:\/\/(?:(?:www|web|m|mobile|mbasic)\.)?facebook\.com\/(?:(?:media\/set\/|[a-z0-9.]+\/media_set)\?|profile\.php\?id=[0-9]+&sk=photos)/ig,
 			/^https?:\/\/(?:(?:www|web)\.)?facebook\.com\/[a-z0-9.]+\/allactivity/ig,
 			/^https?:\/\/(?:(?:m|mobile|mbasic)\.)?facebook\.com/ig,
-			/^https?:\/\/(?:(?:www|web|m|mobile|mbasic)\.)?facebook\.com\/(?:[a-z0-9.]+\/activity_feed\/|media\/set\/\?set=vb\.|[a-z0-9.]+\/media_set\?set=vb\.)/ig
+			/^https?:\/\/(?:(?:www|web|m|mobile|mbasic)\.)?facebook\.com\/(?:[a-z0-9.]+\/activity_feed\/|media\/set\/\?set=(?:vb\.|a\.[0-9]{15,16}\.[0-9]{15,16})|[a-z0-9.]+\/media_set\?set=(?:vb\.|a\.[0-9]{15,16}\.[0-9]{15,16})|profile\.php\?id=[0-9]+.*&set=a\.[0-9]{15,16}\.[0-9]{15,16})/ig,
+			/^https?:\/\/(?:(?:www|web)\.)?facebook\.com\/[a-z0-9.]+\/timeline\/recent_posts\//ig
 		];
 
 		lightTokens = [
@@ -127,13 +130,16 @@ fuf = {
 		if (oldLink.match(/^https?:\/\/(?:(?:www|web|m|mobile)\.)?facebook\.com\/(?:media\/set\/|[a-z0-9.]+\/media_set)\?/ig)) {
 			// Parameter SET must be there
 			if (oldLink.match(/[?&#]set=[^&#]*/ig)) {
-				var minimalAlbumID = /[?&#]set=[^&#]*a\.([0-9]+)[^&#]*/ig.exec(oldLink)[1];
-				if ((minimalAlbumID.length > 15) || (parseInt(minimalAlbumID.charAt[0]) < 4)) {
-					newLink = newLink.replace(/([?&#])set=[^&#]*a\.([0-9]+)\.([0-9]+)[^&#]*/ig, '$1set=a.$2.$3');
-				} else {
-					newLink = newLink.replace(/([?&#])set=[^&#]*a\.([0-9]+)[^&#]*/ig, '$1set=a.$2');
+				// Only process when value of SET is NOT refering to collaboration album
+				if (!oldLink.match(/[?&#]set=a\.[0-9]{15,16}\.[0-9]{15,16}/ig)) {
+					var minimalAlbumID = /[?&#]set=[^&#]*a\.([0-9]+)[^&#]*/ig.exec(oldLink)[1];
+					if ((minimalAlbumID.length > 15) || (parseInt(minimalAlbumID.charAt[0]) < 4)) {
+						newLink = newLink.replace(/([?&#])set=[^&#]*a\.([0-9]+)\.([0-9]+)[^&#]*/ig, '$1set=a.$2.$3');
+					} else {
+						newLink = newLink.replace(/([?&#])set=[^&#]*a\.([0-9]+)[^&#]*/ig, '$1set=a.$2');
+					}
+					oldLink = newLink;
 				}
-				oldLink = newLink;
 			}
 		}
 		
