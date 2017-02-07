@@ -7,10 +7,8 @@ Based on [Query stripper](https://github.com/rudiedirkx/Query-stripper) by Rudie
 
 Thanks [Custom Icon Design](http://www.customicondesign.com/) for the wrench icon used in the icon of this extension.
 
-## News!
-A new extension focusing on fixing Facebook URLs (like this) is being written, with a completely different mechanism. It is **Blue Neutralization**.
-
-New updates to *Facebook URL fix* will not change the main mechanism derived from *Query stripper*.
+## Note
+A new extension focusing on fixing Facebook URLs (like this) is being written, with a completely different mechanism. New updates to *Facebook URL fix* will not change the main mechanism derived from *Query stripper*.
 
 ## Features
 - Removes unnecessary query parameters from Facebook URLs
@@ -71,6 +69,11 @@ http://example.com/
 ```
 
 ## Version history
+### 1.4.1
+- Added two useless query parameters: `qsefr` and `lst`
+- Query parameter `notif_id` is now excluded for a special notification about the engagement of recent posts by current user.
+- Fix for links of albums contributed by more than one person.
+
 ### 1.4
 - Added support for all possible protocols that Facebook works on.
 - Added support for `http(s)://facebook.com` links.
