@@ -14,6 +14,7 @@ A new extension focusing on fixing Facebook URLs (like this) is being written, w
 - Removes unnecessary query parameters from Facebook URLs
 - Shortens album ID containing `a.<something>` in query parameter `set` in legacy album links
 - Enters external links directly. (Facebook's reference tracking is skipped.)
+- Directly enters a single post in a group from a notification about the post.
 
 ### Removed feature
 - Changes modern photo links into legacy links
@@ -44,7 +45,7 @@ https://www.facebook.com/<somebody>/posts/<post_id>?comment_id=<comment_id>&repl
 
 ### 2. Shortening album ID containing `a.<something>` in query parameter `set` in legacy album links
 
-(This feature is available since version 1.1.)
+(Available since version 1.1)
 
 Here is a legacy link to a photo album:
 ```
@@ -57,7 +58,7 @@ https://www.facebook.com/media/set/?set=a.<minimal_numeric_part>
 
 ### 3. Entering external links directly
 
-(This feature is available since version 1.2.)
+(Available since version 1.2)
 
 Here is a redirection link to an external site:
 ```
@@ -68,7 +69,29 @@ The external link is extracted and entered.
 http://example.com/
 ```
 
+### 4. Directly entering a single post in a group from a notification about the post
+
+(Available since version 1.5)
+
+A link to the post points to a page containing not only the post, but also other posts in the same group.
+```
+https://www.facebook.com/groups/<group_name_or_id>/?multi_permalinks=<single_post_id>
+```
+The page can cause additional, unnecessary load. A Facebook user has already got a choice to view all posts in the group by clicking *Discussion.*
+
+The following link is much straighter.
+```
+https://www.facebook.com/groups/<group_name_or_id>/permalink/<single_post_id>
+```
+**Notes:**
+- The user will not see pinned post in the group until he/she clicks *Discussion*.
+- Notifications about multiple posts in a group are safely bypassed by this feature.
+
 ## Version history
+### 1.5
+- Updated useless parameters.
+- New feature: Directly entering a single post in a group from a notification about the post.
+
 ### 1.4.1
 - Added two useless query parameters: `qsefr` and `lst`
 - Query parameter `notif_id` is now excluded for a special notification about the engagement of recent posts by current user.
