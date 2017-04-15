@@ -3,6 +3,7 @@ fuf = {
 		tokens = [
 			// Include completely useless query parameters
 			'fref',
+			'fcref',
 			'cref',
 			'ref',
 			'fb_ref',
@@ -41,7 +42,8 @@ fuf = {
 			'video_source',
 			'returnto',
 			'qsefr',
-			'lst'
+			'lst',
+			'h'
 		];
 
 		darkTokens = [
@@ -101,7 +103,27 @@ fuf = {
 			}
 		}
 
-		// Rule 2: Remove useless query parameters
+		// Rule 2: Do not use query parameter multi_permalinks on a notification of a single post in a group.
+		// Parameter multi_permalinks must be there. And if it is there, it is normally put first in the query string.
+		if (oldLink.match(/\?multi_permalinks=[0-9]+/ig)) {
+			/*
+				PC and mobile version are treated differently.
+				PC: To /permalink/<post_id>
+				Mobile: To ?view=permalink&id=<post_id>
+			*/
+			// PC
+			if (oldLink.match(/^https?:\/\/(?:(?:www|web)\.)?facebook\.com\/groups\//ig)) {
+				newLink = newLink.replace(/\/?\?multi_permalinks=([0-9]+)&/ig, '/permalink/$1?');
+				newLink = newLink.replace(/\/?\?multi_permalinks=([0-9]+)/ig, '/permalink/$1');
+			}
+			// Mobile
+			else if (oldLink.match(/^https?:\/\/(?:(?:m|mobile)\.)?facebook\.com\/groups\//ig)) {
+				newLink = newLink.replace(/\/?\?multi_permalinks=([0-9]+)/ig, '/?view=permalink&id=$1');
+			}
+			oldLink = newLink;
+		}
+
+		// Rule 3: Remove useless query parameters
 		if (oldLink.indexOf('?') > 0 || oldLink.indexOf('#') > 0) {
 			// Add more useless query parameters from darkTokens to tokens array
 			var i;
@@ -126,7 +148,7 @@ fuf = {
 			}
 		}
 
-		// Rule 3: Shorten parameter SET on legacy a-type (SET has a value containing 'a.[something]') link for albums
+		// Rule 4: Shorten parameter SET on legacy a-type (SET has a value containing 'a.[something]') link for albums
 		if (oldLink.match(/^https?:\/\/(?:(?:www|web|m|mobile)\.)?facebook\.com\/(?:media\/set\/|[a-z0-9.]+\/media_set)\?/ig)) {
 			// Parameter SET must be there
 			if (oldLink.match(/[?&#]set=[^&#]*/ig)) {
@@ -142,7 +164,6 @@ fuf = {
 				}
 			}
 		}
-		
 
 		// Only return shortened link
 		if ( newLink != url ) {
