@@ -105,7 +105,8 @@ fuf = {
 
 		// Rule 2: Do not use query parameter multi_permalinks on a notification of a single post in a group.
 		// Parameter multi_permalinks must be there. And if it is there, it is normally put first in the query string.
-		if (oldLink.match(/\?multi_permalinks=[0-9]+/ig)) {
+		// This rule properly excludes multi_permalinks containing multiple post IDs.
+		if (oldLink.match(/\?multi_permalinks=[0-9]+(?:&|#|$)/ig)) {
 			/*
 				PC and mobile version are treated differently.
 				PC: To /permalink/<post_id>

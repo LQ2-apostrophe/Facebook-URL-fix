@@ -88,6 +88,9 @@ https://www.facebook.com/groups/<group_name_or_id>/permalink/<single_post_id>
 - Notifications about multiple posts in a group are safely bypassed by this feature.
 
 ## Version history
+### 1.5.1
+- Fix: Properly exclude `multi_permalinks` containing multiple post IDs.
+
 ### 1.5
 - Updated useless parameters.
 - New feature: Directly entering a single post in a group from a notification about the post.
