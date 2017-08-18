@@ -88,8 +88,12 @@ https://www.facebook.com/groups/<group_name_or_id>/permalink/<single_post_id>
 - Notifications about multiple posts in a group are safely bypassed by this feature.
 
 ## Version history
+### 1.5.2
+- Updated useless parameters, especially `qp_instance_log_data` parameters in links of "quick" special posts from Facebook official apps.
+- Removed `type` from useless list as now it is needed in photo links. (Theater view for photos is now enforced further by Facebook.)
+
 ### 1.5.1
-- Fix: Properly exclude `multi_permalinks` containing multiple post IDs.
+Fix: Properly exclude `multi_permalinks` containing multiple post IDs.
 
 ### 1.5
 - Updated useless parameters.

@@ -43,7 +43,8 @@ fuf = {
 			'returnto',
 			'qsefr',
 			'lst',
-			'h'
+			'h',
+			'rdrhc'
 		];
 
 		darkTokens = [
@@ -53,7 +54,6 @@ fuf = {
 			'set',
 			'privacy_source',
 			'l',
-			'type',
 			'notif_id'
 		];
 
@@ -64,7 +64,6 @@ fuf = {
 			/^https?:\/\/(?:(?:www|web|m|mobile|mbasic)\.)?facebook\.com\/(?:(?:media\/set\/|[a-z0-9.]+\/media_set)\?|profile\.php\?id=[0-9]+&sk=photos)/ig,
 			/^https?:\/\/(?:(?:www|web)\.)?facebook\.com\/[a-z0-9.]+\/allactivity/ig,
 			/^https?:\/\/(?:(?:m|mobile|mbasic)\.)?facebook\.com/ig,
-			/^https?:\/\/(?:(?:www|web|m|mobile|mbasic)\.)?facebook\.com\/(?:[a-z0-9.]+\/activity_feed\/|media\/set\/\?set=(?:vb\.|a\.[0-9]{15,16}\.[0-9]{15,16})|[a-z0-9.]+\/media_set\?set=(?:vb\.|a\.[0-9]{15,16}\.[0-9]{15,16})|profile\.php\?id=[0-9]+.*&set=a\.[0-9]{15,16}\.[0-9]{15,16})/ig,
 			/^https?:\/\/(?:(?:www|web)\.)?facebook\.com\/[a-z0-9.]+\/timeline\/recent_posts\//ig
 		];
 
@@ -76,7 +75,9 @@ fuf = {
 			's|appid|sharer_type|feedback_referrer|feedback_source',
 			'pp_source|id',
 			'story_location',
-			'size'
+			'size',
+			'acontext',
+			'helpref'
 		];
 
 		lightTokensUrlRegex = [
@@ -84,7 +85,9 @@ fuf = {
 			/^https?:\/\/(?:(?:www|web|m|mobile|mbasic)\.)?facebook\.com\/ajax\/sharer\/\?/ig,
 			/^https?:\/\/(?:(?:www|web|m|mobile|mbasic)\.)?facebook\.com\/photo\.php\?/ig,
 			/^https?:\/\/(?:(?:www|web|m|mobile|mbasic)\.)?facebook\.com\/ajax\/nfx\/start_dialog\?/ig,
-			/^https?:\/\/(?:(?:www|web|m|mobile|mbasic)\.)?facebook\.com\/[a-z0-9.]+\/photos\/[^\/]*\/[0-9]*\/\?/ig
+			/^https?:\/\/(?:(?:www|web|m|mobile|mbasic)\.)?facebook\.com\/[a-z0-9.]+\/photos\/[^\/]*\/[0-9]*\/\?/ig,
+			/^https?:\/\/(?:(?:www|web|m|mobile|mbasic)\.)?facebook\.com\/events\//ig,
+			/^https?:\/\/(?:(?:www|web|m|mobile|mbasic)\.)?facebook\.com\/help\//ig
 		];
 
 		var oldLink = url;
@@ -142,6 +145,7 @@ fuf = {
 			// Remove query parameters now
 			var regex = new RegExp('([?&#])(?:' + tokens.join('|') + ')=[^&#]*', 'ig');
 			newLink = newLink.replace(regex, '$1'); // Remove `name=value`
+			newLink = newLink.replace(/([?&#])qp_instance_log_data(?:\[[^&#]+\])?=[^&#]*/ig, '$1'); // A special treatment for "qp_instance_log_data" parameters
 			if ( newLink != oldLink ) {
 				newLink = newLink.replace(/([?&#])[?&#]+/g, '$1'); // Replace double ?&# by first occurring
 				newLink = newLink.replace(/[?&#]+$/, ''); // Remove trailing ?&#
