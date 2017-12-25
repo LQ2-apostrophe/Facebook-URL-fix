@@ -44,7 +44,8 @@ fuf = {
 			'qsefr',
 			'lst',
 			'h',
-			'rdrhc'
+			'rdrhc',
+			'dti'
 		];
 
 		darkTokens = [
@@ -73,11 +74,12 @@ fuf = {
 			// This token list is used for newly-introduced query parameters.
 			// If any of these parameters are not used completely, it should be moved to the default token list.
 			's|appid|sharer_type|feedback_referrer|feedback_source',
-			'pp_source|id',
+			'pp_source|id|ifg',
 			'story_location',
 			'size',
 			'acontext',
-			'helpref'
+			'helpref|qp_h',
+			'comment_tracking'
 		];
 
 		lightTokensUrlRegex = [
@@ -87,21 +89,39 @@ fuf = {
 			/^https?:\/\/(?:(?:www|web|m|mobile|mbasic)\.)?facebook\.com\/ajax\/nfx\/start_dialog\?/ig,
 			/^https?:\/\/(?:(?:www|web|m|mobile|mbasic)\.)?facebook\.com\/[a-z0-9.]+\/photos\/[^\/]*\/[0-9]*\/\?/ig,
 			/^https?:\/\/(?:(?:www|web|m|mobile|mbasic)\.)?facebook\.com\/events\//ig,
-			/^https?:\/\/(?:(?:www|web|m|mobile|mbasic)\.)?facebook\.com\/help\//ig
+			/^https?:\/\/(?:(?:www|web|m|mobile|mbasic)\.)?facebook\.com\/help\//ig,
+			/^https?:\/\/(?:(?:www|web)\.)?facebook\.com\/.+\?(?:.+&)?comment_id=/ig
+		];
+
+		redirectUrlRegex = [
+			// Regexes matching redirection URLs. Used by Rule 1.
+			/^https?:\/\/(?:[a-z0-9]*\.)?facebook\.com\/l\.php\?/ig,
+			/^https?:\/\/(?:(?:www|web)\.)?facebook\.com\/qp\/action\/redirect\/\?/ig
+		];
+
+		redirectUrlDestParam = [
+			// Query parameters containing destination URLs. redirectUrlDestParam[a] matches redirectUrlRegex[a].
+			'u',
+			'qp_action_url'
 		];
 
 		var oldLink = url;
 		var newLink = oldLink;
+		var i;
+		var regex;
 
-		// Rule 1: Skip Facebook outbound redirection (and warning)
-		if (oldLink.match(/^https?:\/\/(?:[a-z0-9]*\.)?facebook\.com\/l\.php\?/ig)) {
-			// Query parameter U contains the original outbound link
-			if (oldLink.match(/[?&#]u=[^&#]*/ig)) {
-				newLink = decodeURIComponent(/[?&#]u=([^&#]*)/ig.exec(oldLink)[1]);
-				oldLink = newLink;
-				// Skip other rules if outbound link is truly outside Facebook
-				if (!newLink.match(/^https?:\/\/(?:.*\.)?facebook\.com/ig)) {
-					return newLink;
+		// Rule 1: Skip Facebook redirection (and warning)
+		for (i = 0; i < redirectUrlRegex.length; i++) {
+			if (oldLink.match(redirectUrlRegex[i])) {
+				// Extract destination link
+				regex = new RegExp('[?&#]' + redirectUrlDestParam[i] + '=([^&#]*)', 'ig');
+				if (oldLink.match(regex)) {
+					newLink = decodeURIComponent(regex.exec(oldLink)[1]);
+					oldLink = newLink;
+					// Skip other rules if outbound link is truly outside Facebook
+					if (!newLink.match(/^https?:\/\/(?:.*\.)?facebook\.com/ig)) {
+						return newLink;
+					}
 				}
 			}
 		}
@@ -130,7 +150,6 @@ fuf = {
 		// Rule 3: Remove useless query parameters
 		if (oldLink.indexOf('?') > 0 || oldLink.indexOf('#') > 0) {
 			// Add more useless query parameters from darkTokens to tokens array
-			var i;
 			for (i = 0; i < darkTokens.length; i++) {
 				if (!oldLink.match(darkTokensUrlRegex[i])) {
 					tokens.push(darkTokens[i]);
@@ -143,9 +162,8 @@ fuf = {
 				}
 			}
 			// Remove query parameters now
-			var regex = new RegExp('([?&#])(?:' + tokens.join('|') + ')=[^&#]*', 'ig');
+			regex = new RegExp('([?&#])(?:' + tokens.join('|') + ')=[^&#]*', 'ig');
 			newLink = newLink.replace(regex, '$1'); // Remove `name=value`
-			newLink = newLink.replace(/([?&#])qp_instance_log_data(?:\[[^&#]+\])?=[^&#]*/ig, '$1'); // A special treatment for "qp_instance_log_data" parameters
 			if ( newLink != oldLink ) {
 				newLink = newLink.replace(/([?&#])[?&#]+/g, '$1'); // Replace double ?&# by first occurring
 				newLink = newLink.replace(/[?&#]+$/, ''); // Remove trailing ?&#

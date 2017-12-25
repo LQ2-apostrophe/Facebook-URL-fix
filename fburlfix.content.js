@@ -14,7 +14,7 @@
 	function replaceQuery(url) {
 		var nUrl = fuf.fixUrl(url);
 		if ( nUrl ) {
-			console.log('Facebook URL fix did its thing on "' + url + '".');
+			console.log('Facebook URL fix did its thing on this URL:\n' + url + '\nNew URL:\n' + nUrl);
 			history.replaceState({}, '', nUrl);
 		}
 	}

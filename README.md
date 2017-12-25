@@ -1,7 +1,7 @@
 # Facebook URL fix
 This is a Google Chrome extension which shortens Facebook URLs to reduce tracking and unresponsive situations.
 
-Author: **LQ2'** ([Website](http://www.LQ2music.com/) | [GitHub](https://github.com/LQ2-apostrophe))
+Author: **LQ2'** ([Website](https://www.LQ2music.com/) | [GitHub](https://github.com/LQ2-apostrophe))
 
 Based on [Query stripper](https://github.com/rudiedirkx/Query-stripper) by Rudie Dirkx.
 
@@ -88,6 +88,12 @@ https://www.facebook.com/groups/<group_name_or_id>/permalink/<single_post_id>
 - Notifications about multiple posts in a group are safely bypassed by this feature.
 
 ## Version history
+
+### 1.6
+- Skipped redirection for "quick" special posts. Therefore, there is no need to remove `qp_instance_log_data` parameters anymore.
+- Logs now contain both original and new (stripped) links.
+- Updated more useless parameters.
+
 ### 1.5.2
 - Updated useless parameters, especially `qp_instance_log_data` parameters in links of "quick" special posts from Facebook official apps.
 - Removed `type` from useless list as now it is needed in photo links. (Theater view for photos is now enforced further by Facebook.)
